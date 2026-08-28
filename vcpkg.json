@@ -1,0 +1,10 @@
+{
+  "name": "checklist-desktop",
+  "version-string": "1.0.0",
+  "description": "Desktop checklist application built with C++ and Qt6/QML",
+  "dependencies": [
+    "qt6-base",
+    "qt6-declarative",
+    "qt6-labsplatform"
+  ]
+}

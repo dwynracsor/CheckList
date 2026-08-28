@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>AppWindow.qml</file>
+        <file>styles/Theme.qml</file>
+        <file>styles/Controls.qml</file>
+        <file>components/TaskCard.qml</file>
+        <file>components/CorrectionBlock.qml</file>
+        <file>components/ChecklistDelegate.qml</file>
+        <file>components/InlineEditor.qml</file>
+        <file>components/AddItemRow.qml</file>
+        <file>components/ToggleFormButton.qml</file>
+        <file>components/TaskForm.qml</file>
+        <file>components/ChecklistBuilder.qml</file>
+        <file>components/EmptyState.qml</file>
+        <file>components/SyncStatus.qml</file>
+    </qresource>
+</RCC>

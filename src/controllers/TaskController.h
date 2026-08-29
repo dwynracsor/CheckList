@@ -5,10 +5,12 @@
 #include <QList>
 #include <QTimer>
 #include <QQmlListProperty>
+#include <QStack>
 
 class Task;
 class Correction;
 class JsonStorage;
+class UndoCommand;
 
 class TaskController : public QObject
 {
@@ -19,6 +21,8 @@ class TaskController : public QObject
     Q_PROPERTY(QString lastError READ lastError NOTIFY errorChanged)
     Q_PROPERTY(bool autoSave READ autoSave WRITE setAutoSave NOTIFY autoSaveChanged)
     Q_PROPERTY(int autoSaveDelay READ autoSaveDelay WRITE setAutoSaveDelay NOTIFY autoSaveDelayChanged)
+    Q_PROPERTY(bool canUndo READ canUndo NOTIFY undoStackChanged)
+    Q_PROPERTY(bool canRedo READ canRedo NOTIFY redoStackChanged)
 
 public:
     explicit TaskController(QObject *parent = nullptr);
@@ -62,12 +66,21 @@ public:
     // Load from web format (for migration)
     Q_INVOKABLE void importFromJsonString(const QString &jsonString);
 
+    // Undo/Redo
+    bool canUndo() const;
+    bool canRedo() const;
+    Q_INVOKABLE void undo();
+    Q_INVOKABLE void redo();
+    Q_INVOKABLE void clearHistory();
+
 signals:
     void tasksChanged();
     void loadedChanged();
     void errorChanged();
     void autoSaveChanged();
     void autoSaveDelayChanged();
+    void undoStackChanged();
+    void redoStackChanged();
     void taskAdded(int index);
     void taskRemoved(int index);
     void saved();
@@ -76,6 +89,7 @@ private slots:
     void onAutoSaveTimer();
 
 private:
+    void init();
     static void tasksAppend(QQmlListProperty<Task> *list, Task *task);
     static qsizetype tasksCount(QQmlListProperty<Task> *list);
     static Task* tasksAt(QQmlListProperty<Task> *list, qsizetype index);
@@ -83,6 +97,7 @@ private:
 
     void scheduleAutoSave();
     void setError(const QString &message);
+    void pushUndo(std::shared_ptr<UndoCommand> cmd);
 
     QList<Task*> m_tasks;
     JsonStorage *m_storage;
@@ -91,6 +106,8 @@ private:
     bool m_autoSave;
     int m_autoSaveDelay;
     QString m_lastError;
+    QStack<std::shared_ptr<UndoCommand>> m_undoStack;
+    QStack<std::shared_ptr<UndoCommand>> m_redoStack;
 };
 
 #endif // TASKCONTROLLER_H

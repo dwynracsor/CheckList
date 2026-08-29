@@ -6,13 +6,13 @@ import ChecklistApp
 RowLayout {
     id: root
 
-    property string placeholderText: "Agregar ítem..."
+    property string placeholderText: qsTr("Agregar ítem...")
 
     signal addItem(string text)
 
     spacing: Theme.spacingSmall
 
-    AppControls.StyledTextField {
+    StyledTextField {
         id: inputField
         Layout.fillWidth: true
         placeholderText: root.placeholderText
@@ -21,7 +21,7 @@ RowLayout {
         Keys.onEnterPressed: addBtn.clicked()
     }
 
-    AppControls.PrimaryButton {
+    PrimaryButton {
         id: addBtn
         text: "+"
         onClicked: {

@@ -15,10 +15,10 @@ ColumnLayout {
     signal itemAdded(int taskIdx, int corrIdx, string text)
     signal correctionDeleted(int taskIdx, int corrIdx)
 
-    // Get correction from controller
+    // Get correction from controller — re-evaluates when indices change
     property var correction: {
         var task = taskController.getTask(root.taskIndex)
-        if (task) {
+        if (task && root.correctionIndex >= 0 && root.correctionIndex < task.correctionCount) {
             return task.getCorrection(root.correctionIndex)
         }
         return null
@@ -107,7 +107,7 @@ ColumnLayout {
 
                 Text {
                     visible: root.correction ? root.correction.itemCount === 0 : true
-                    text: "Sin ítems"
+                    text: qsTr("Sin ítems")
                     font.pixelSize: Theme.fontSizeMedium
                     font.italic: true
                     color: Theme.textDisabled
@@ -118,7 +118,7 @@ ColumnLayout {
             // Add item row
             AddItemRow {
                 Layout.fillWidth: true
-                placeholderText: "Agregar ítem..."
+                placeholderText: qsTr("Agregar ítem...")
                 onAddItem: function(text) {
                     root.itemAdded(root.taskIndex, root.correctionIndex, text)
                 }
@@ -131,11 +131,19 @@ ColumnLayout {
 
                 Item { Layout.fillWidth: true }
 
-                AppControls.DangerButton {
-                    text: "Eliminar corrección"
-                    onClicked: root.correctionDeleted(root.taskIndex, root.correctionIndex)
+                DangerButton {
+                    text: qsTr("Eliminar corrección")
+                    onClicked: deleteCorrDialog.open()
                 }
             }
         }
+    }
+
+    ConfirmationDialog {
+        id: deleteCorrDialog
+        titleText: "Eliminar corrección"
+        messageText: "¿Estás seguro de que quieres eliminar esta corrección? Esta acción se puede deshacer."
+        confirmText: "Eliminar"
+        onConfirmed: root.correctionDeleted(root.taskIndex, root.correctionIndex)
     }
 }

@@ -2,13 +2,13 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QDebug>
 
 #include "domain/ChecklistItem.h"
 #include "domain/Correction.h"
 #include "domain/Task.h"
 #include "persistence/JsonStorage.h"
 #include "controllers/TaskController.h"
-#include "controllers/CorrectionController.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
     qmlRegisterType<Task>("ChecklistApp", 1, 0, "Task");
     qmlRegisterType<JsonStorage>("ChecklistApp", 1, 0, "JsonStorage");
     qmlRegisterType<TaskController>("ChecklistApp", 1, 0, "TaskController");
-    qmlRegisterType<CorrectionController>("ChecklistApp", 1, 0, "CorrectionController");
 
     QQmlApplicationEngine engine;
 
@@ -35,8 +34,21 @@ int main(int argc, char *argv[])
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,
         &app,
-        []() { QCoreApplication::exit(-1); },
+        []() {
+            qCritical() << "QML object creation failed!";
+            QCoreApplication::exit(-1);
+        },
         Qt::QueuedConnection
+    );
+
+    QObject::connect(
+        &engine,
+        &QQmlApplicationEngine::warnings,
+        &app,
+        [](const QList<QQmlError> &warnings) {
+            for (const QQmlError &error : warnings)
+                qWarning() << "QML Warning:" << error.toString();
+        }
     );
 
     engine.loadFromModule("ChecklistApp", "Main");

@@ -6,7 +6,6 @@ RowLayout {
     id: root
 
     property string statusText: ""
-    property string lastSaved: ""
     property bool autoHide: true
     property int autoHideDelay: 3000
 
@@ -43,11 +42,7 @@ RowLayout {
 
     // Status text
     Text {
-        text: {
-            if (root.lastSaved !== "")
-                return "Guardado: " + root.lastSaved
-            return root.statusText
-        }
+        text: root.statusText
         font.pixelSize: Theme.fontSizeSmall
         color: Theme.textDisabled
         opacity: root.statusText !== "" ? 1 : 0

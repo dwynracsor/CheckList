@@ -23,7 +23,8 @@ set(SOURCES
     src/persistence/JsonStorage.cpp
     # Controllers
     src/controllers/TaskController.cpp
-    src/controllers/CorrectionController.cpp
+    # Undo
+    src/undo/UndoCommand.cpp
 )
 
 set(HEADERS
@@ -32,7 +33,7 @@ set(HEADERS
     src/domain/Task.h
     src/persistence/JsonStorage.h
     src/controllers/TaskController.h
-    src/controllers/CorrectionController.h
+    src/undo/UndoCommand.h
 )
 
 # Resources
@@ -59,7 +60,14 @@ qt6_add_qml_module(${PROJECT_NAME}
         qml/Main.qml
         qml/AppWindow.qml
         qml/styles/Theme.qml
-        qml/styles/AppControls.qml
+        qml/styles/ButtonStyle.qml
+        qml/styles/PrimaryButton.qml
+        qml/styles/SuccessButton.qml
+        qml/styles/DangerButton.qml
+        qml/styles/SmallButton.qml
+        qml/styles/StyledTextField.qml
+        qml/styles/StyledTextArea.qml
+        qml/styles/StyledCheckBox.qml
         qml/components/TaskCard.qml
         qml/components/CorrectionBlock.qml
         qml/components/ChecklistDelegate.qml
@@ -70,9 +78,12 @@ qt6_add_qml_module(${PROJECT_NAME}
         qml/components/ChecklistBuilder.qml
         qml/components/EmptyState.qml
         qml/components/SyncStatus.qml
+        qml/components/ConfirmationDialog.qml
     RESOURCES
         resources/icons/app.svg
 )
+
+
 
 # Tests
 if(Qt6Test_FOUND)

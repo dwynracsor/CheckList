@@ -5,7 +5,7 @@ import ChecklistApp
 ColumnLayout {
     id: root
 
-    property string emptyText: "No hay correcciones aún. ¡Crea una!"
+    property string emptyText: qsTr("No hay correcciones aún. ¡Crea una!")
     property string emoji: "📋"
 
     spacing: Theme.spacingMedium
@@ -14,6 +14,7 @@ ColumnLayout {
 
     Component.onCompleted: {
         appearAnim.start()
+        scaleAnim.start()
     }
 
     NumberAnimation {
@@ -59,7 +60,7 @@ ColumnLayout {
     }
 
     Text {
-        text: "Haz clic en \"Crear nueva corrección\" para comenzar"
+        text: qsTr("Haz clic en \"Crear nueva corrección\" para comenzar")
         font.pixelSize: Theme.fontSizeSmall
         color: Theme.textDisabled
         Layout.alignment: Qt.AlignHCenter

@@ -11,7 +11,7 @@ ApplicationWindow {
     height: 600
     minimumWidth: 600
     minimumHeight: 400
-    title: "Correcciones"
+    title: qsTr("Correcciones")
     color: Theme.background
 
     // Keyboard shortcuts
@@ -25,10 +25,10 @@ ApplicationWindow {
 
     Shortcut {
         sequence: "Ctrl+S"
-        onActivated: {
-            controller.save()
-            syncStatus.updateStatus("Guardado manualmente")
-        }
+                onActivated: {
+                    taskController.save()
+                    syncStatus.updateStatus(qsTr("Guardado manualmente"))
+                }
     }
 
     Shortcut {
@@ -48,10 +48,10 @@ ApplicationWindow {
     // Native menu bar
     menuBar: MenuBar {
         Menu {
-            title: "&Archivo"
+            title: qsTr("&Archivo")
 
             Action {
-                text: "&Nueva corrección"
+                text: qsTr("&Nueva corrección")
                 shortcut: "Ctrl+N"
                 onTriggered: {
                     taskForm.visible = true
@@ -59,82 +59,85 @@ ApplicationWindow {
             }
 
             Action {
-                text: "&Guardar"
+                text: qsTr("&Guardar")
                 shortcut: "Ctrl+S"
                 onTriggered: {
-                    controller.save()
-                    syncStatus.updateStatus("Guardado manualmente")
+                    taskController.save()
+                    syncStatus.updateStatus(qsTr("Guardado manualmente"))
                 }
             }
 
             MenuSeparator {}
 
             Action {
-                text: "&Salir"
+                text: qsTr("&Salir")
                 shortcut: "Ctrl+Q"
                 onTriggered: Qt.quit()
             }
         }
 
         Menu {
-            title: "&Editar"
+            title: qsTr("&Editar")
 
             Action {
-                text: "&Deshacer"
+                text: qsTr("&Deshacer")
                 shortcut: "Ctrl+Z"
-                onTriggered: {
-                    // TODO: Implement undo
-                }
+                enabled: taskController.canUndo
+                onTriggered: taskController.undo()
             }
 
             Action {
-                text: "&Rehacer"
+                text: qsTr("&Rehacer")
                 shortcut: "Ctrl+Y"
-                onTriggered: {
-                    // TODO: Implement redo
-                }
+                enabled: taskController.canRedo
+                onTriggered: taskController.redo()
             }
         }
 
         Menu {
-            title: "&Ver"
+            title: qsTr("&Ver")
 
             Action {
-                text: "Mostrar &formulario"
+                text: qsTr("Mostrar &formulario")
                 shortcut: "Ctrl+T"
                 onTriggered: {
                     taskForm.visible = !taskForm.visible
                 }
             }
+
+            MenuSeparator {}
+
+            Action {
+                text: Theme.darkMode ? qsTr("Modo claro") : qsTr("Modo oscuro")
+                onTriggered: Theme.darkMode = !Theme.darkMode
+            }
         }
 
         Menu {
-            title: "A&yuda"
+            title: qsTr("A&yuda")
 
             Action {
-                text: "Acerca &de..."
+                text: qsTr("Acerca &de...")
                 onTriggered: aboutDialog.open()
             }
         }
     }
 
-    // TaskController instance
-    TaskController {
-        id: controller
-        autoSave: true
-        autoSaveDelay: 500
+    // TaskController instance (from main.cpp context property)
+    Connections {
+        target: taskController
 
         Component.onCompleted: {
-            load()
+            taskController.load()
         }
 
-        onSaved: {
+        function onSaved() {
             syncStatus.updateStatus("Guardado")
         }
 
-        onLastErrorChanged: {
-            if (lastError !== "") {
-                syncStatus.updateStatus("Error: " + lastError)
+        function onLastErrorChanged() {
+            if (taskController.lastError !== "") {
+                syncStatus.updateStatus("Error: " + taskController.lastError)
             }
         }
     }
@@ -142,7 +145,7 @@ ApplicationWindow {
     // About dialog
     Dialog {
         id: aboutDialog
-        title: "Acerca de Correcciones"
+        title: qsTr("Acerca de Correcciones")
         modal: true
         anchors.centerIn: parent
         standardButtons: Dialog.Ok
@@ -159,14 +162,14 @@ ApplicationWindow {
             }
 
             Text {
-                text: "Versión 1.0.0"
+                text: qsTr("Versión 1.0.0")
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textMuted
                 Layout.alignment: Qt.AlignHCenter
             }
 
             Text {
-                text: "Aplicación de escritorio para gestionar\ncorrecciones y checklists"
+                text: qsTr("Aplicación de escritorio para gestionar\ncorrecciones y checklists")
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.textDisabled
                 horizontalAlignment: Text.AlignHCenter
@@ -174,7 +177,7 @@ ApplicationWindow {
             }
 
             Text {
-                text: "Construido con C++ y Qt/QML"
+                text: qsTr("Construido con C++ y Qt/QML")
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.textDisabled
                 Layout.alignment: Qt.AlignHCenter
@@ -190,10 +193,18 @@ ApplicationWindow {
 
         // Title
         Text {
-            text: "Correcciones"
+            text: qsTr("Correcciones")
             font.pixelSize: Theme.fontSizeTitle
             font.weight: Theme.fontWeightBold
             color: Theme.textPrimary
+        }
+
+        // Search field
+        StyledTextField {
+            id: searchField
+            Layout.fillWidth: true
+            placeholderText: qsTr("Buscar tareas...")
+            onTextChanged: tasksList.refreshFilter()
         }
 
         // Toggle form button
@@ -210,12 +221,12 @@ ApplicationWindow {
             visible: true
 
             onTaskSaved: function(name, items) {
-                var task = controller.addTask(name)
+                var task = taskController.addTask(name)
                 if (task) {
                     for (var i = 0; i < items.length; i++) {
-                        controller.addItemToTask(controller.taskCount - 1, items[i])
+                        taskController.addItemToTask(taskController.taskCount - 1, items[i])
                     }
-                    syncStatus.updateStatus("Tarea creada: " + name)
+                    syncStatus.updateStatus(qsTr("Tarea creada: ") + name)
                 }
             }
         }
@@ -229,68 +240,93 @@ ApplicationWindow {
             ListView {
                 id: tasksList
                 spacing: Theme.spacingMedium
-                model: controller.tasks
+                model: ListModel { id: filteredModel }
+
+                Component.onCompleted: refreshFilter()
+
+                function refreshFilter() {
+                    filteredModel.clear()
+                    var query = searchField.text.toLowerCase()
+                    for (var i = 0; i < taskController.taskCount; i++) {
+                        var task = taskController.getTask(i)
+                        if (!task) continue
+                        if (query === "" || task.name.toLowerCase().indexOf(query) >= 0) {
+                            filteredModel.append({
+                                taskIndex: i,
+                                name: task.name,
+                                date: task.date,
+                                itemCount: task.itemCount,
+                                correctionCount: task.correctionCount
+                            })
+                        }
+                    }
+                }
+
+                Connections {
+                    target: taskController
+                    function onTasksChanged() { tasksList.refreshFilter() }
+                }
 
                 delegate: TaskCard {
                     width: tasksList.width
 
-                    taskIndex: index
-                    taskName: modelData.name
-                    taskDate: modelData.date
-                    taskItemCount: modelData.itemCount
-                    taskCorrectionCount: modelData.correctionCount
+                    taskIndex: model.taskIndex
+                    taskName: model.name
+                    taskDate: model.date
+                    taskItemCount: model.itemCount
+                    taskCorrectionCount: model.correctionCount
 
                     onItemToggled: function(taskIdx, corrIdx, itemIdx, done) {
                         if (corrIdx === -1) {
-                            controller.toggleItemInTask(taskIdx, itemIdx, done)
+                            taskController.toggleItemInTask(taskIdx, itemIdx, done)
                         } else {
-                            controller.toggleItemInCorrection(taskIdx, corrIdx, itemIdx, done)
+                            taskController.toggleItemInCorrection(taskIdx, corrIdx, itemIdx, done)
                         }
                     }
 
                     onItemRemoved: function(taskIdx, corrIdx, itemIdx) {
                         if (corrIdx === -1) {
-                            controller.removeItemFromTask(taskIdx, itemIdx)
+                            taskController.removeItemFromTask(taskIdx, itemIdx)
                         } else {
-                            controller.removeItemFromCorrection(taskIdx, corrIdx, itemIdx)
+                            taskController.removeItemFromCorrection(taskIdx, corrIdx, itemIdx)
                         }
                     }
 
                     onNameEdited: function(taskIdx, corrIdx, newName) {
                         if (corrIdx === -1) {
-                            controller.setTaskName(taskIdx, newName)
+                            taskController.setTaskName(taskIdx, newName)
                         } else {
-                            controller.setCorrectionName(taskIdx, corrIdx, newName)
+                            taskController.setCorrectionName(taskIdx, corrIdx, newName)
                         }
                     }
 
                     onItemAdded: function(taskIdx, corrIdx, text) {
                         if (corrIdx === -1) {
-                            controller.addItemToTask(taskIdx, text)
+                            taskController.addItemToTask(taskIdx, text)
                         } else {
-                            controller.addItemToCorrection(taskIdx, corrIdx, text)
+                            taskController.addItemToCorrection(taskIdx, corrIdx, text)
                         }
                     }
 
                     onTaskDeleted: function(taskIdx) {
-                        controller.removeTask(taskIdx)
-                        syncStatus.updateStatus("Tarea eliminada")
+                        taskController.removeTask(taskIdx)
+                        syncStatus.updateStatus(qsTr("Tarea eliminada"))
                     }
 
                     onCorrectionDeleted: function(taskIdx, corrIdx) {
-                        controller.removeCorrectionFromTask(taskIdx, corrIdx)
-                        syncStatus.updateStatus("Corrección eliminada")
+                        taskController.removeCorrectionFromTask(taskIdx, corrIdx)
+                        syncStatus.updateStatus(qsTr("Corrección eliminada"))
                     }
 
                     onCorrectionAdded: function(taskIdx, name) {
-                        controller.addCorrectionToTask(taskIdx, name)
-                        syncStatus.updateStatus("Corrección agregada")
+                        taskController.addCorrectionToTask(taskIdx, name)
+                        syncStatus.updateStatus(qsTr("Corrección agregada"))
                     }
                 }
 
                 // Empty state
                 EmptyState {
-                    visible: controller.taskCount === 0
+                    visible: filteredModel.count === 0
                     width: tasksList.width
                     height: 200
                 }
@@ -301,7 +337,7 @@ ApplicationWindow {
         SyncStatus {
             id: syncStatus
             Layout.fillWidth: true
-            statusText: controller.isLoaded ? "Cargado" : "Cargando..."
+            statusText: taskController.isLoaded ? qsTr("Cargado") : qsTr("Cargando...")
         }
     }
 }

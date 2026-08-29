@@ -13,7 +13,6 @@
 
 JsonStorage::JsonStorage(QObject *parent)
     : QObject(parent)
-    , m_autoSave(false)
 {
     QString dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     m_filePath = dataDir + "/tasks.json";
@@ -22,7 +21,6 @@ JsonStorage::JsonStorage(QObject *parent)
 JsonStorage::JsonStorage(const QString &filePath, QObject *parent)
     : QObject(parent)
     , m_filePath(filePath)
-    , m_autoSave(false)
 {
 }
 
@@ -38,19 +36,6 @@ void JsonStorage::setFilePath(const QString &path)
     if (m_filePath != path) {
         m_filePath = path;
         emit filePathChanged();
-    }
-}
-
-bool JsonStorage::autoSave() const
-{
-    return m_autoSave;
-}
-
-void JsonStorage::setAutoSave(bool enabled)
-{
-    if (m_autoSave != enabled) {
-        m_autoSave = enabled;
-        emit autoSaveChanged();
     }
 }
 
@@ -82,12 +67,25 @@ QList<Task*> JsonStorage::load()
         return tasks;
     }
 
-    if (!doc.isArray()) {
-        emit error("El archivo JSON no contiene un array");
+    QJsonArray array;
+
+    if (doc.isObject()) {
+        // New format: { "version": 1, "tasks": [...] }
+        QJsonObject root = doc.object();
+        int version = root["version"].toInt(0);
+        if (version > SCHEMA_VERSION) {
+            emit error("Versión de schema no soportada: " + QString::number(version));
+            return tasks;
+        }
+        array = root["tasks"].toArray();
+    } else if (doc.isArray()) {
+        // Legacy format: bare array [...]
+        array = doc.array();
+    } else {
+        emit error("El archivo JSON no contiene un objeto o array");
         return tasks;
     }
 
-    QJsonArray array = doc.array();
     for (const QJsonValue &value : array) {
         if (value.isObject()) {
             Task *task = jsonToTask(value.toObject());
@@ -108,12 +106,16 @@ bool JsonStorage::save(const QList<Task*> &tasks)
         return false;
     }
 
-    QJsonArray array;
+    QJsonArray tasksArray;
     for (Task *task : tasks) {
-        array.append(taskToJson(task));
+        tasksArray.append(taskToJson(task));
     }
 
-    QJsonDocument doc(array);
+    QJsonObject root;
+    root["version"] = SCHEMA_VERSION;
+    root["tasks"] = tasksArray;
+
+    QJsonDocument doc(root);
     QByteArray data = doc.toJson(QJsonDocument::Indented);
 
     if (writeAtomic(data)) {
@@ -293,5 +295,9 @@ bool JsonStorage::writeAtomic(const QByteArray &data)
 
     // Atomic replace
     QFile::remove(m_filePath);
-    return tempFile.rename(m_filePath);
+    bool ok = tempFile.rename(m_filePath);
+    if (!ok) {
+        tempFile.remove();
+    }
+    return ok;
 }

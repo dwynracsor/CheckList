@@ -9,7 +9,7 @@ add_library(ChecklistApp_lib STATIC
     ${CMAKE_SOURCE_DIR}/src/domain/Task.cpp
     ${CMAKE_SOURCE_DIR}/src/persistence/JsonStorage.cpp
     ${CMAKE_SOURCE_DIR}/src/controllers/TaskController.cpp
-    ${CMAKE_SOURCE_DIR}/src/controllers/CorrectionController.cpp
+    ${CMAKE_SOURCE_DIR}/src/undo/UndoCommand.cpp
 )
 
 target_link_libraries(ChecklistApp_lib PUBLIC
@@ -41,3 +41,8 @@ add_executable(JsonStorageTests unit/JsonStorageTests.cpp)
 target_link_libraries(JsonStorageTests PRIVATE Qt6::Core Qt6::Test ChecklistApp_lib)
 target_include_directories(JsonStorageTests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_test(NAME JsonStorageTests COMMAND JsonStorageTests)
+
+add_executable(TaskControllerTests unit/TaskControllerTests.cpp)
+target_link_libraries(TaskControllerTests PRIVATE Qt6::Core Qt6::Test ChecklistApp_lib)
+target_include_directories(TaskControllerTests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+add_test(NAME TaskControllerTests COMMAND TaskControllerTests)

@@ -14,7 +14,6 @@ class JsonStorage : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathChanged)
-    Q_PROPERTY(bool autoSave READ autoSave WRITE setAutoSave NOTIFY autoSaveChanged)
 
 public:
     explicit JsonStorage(QObject *parent = nullptr);
@@ -23,8 +22,6 @@ public:
 
     QString filePath() const;
     void setFilePath(const QString &path);
-    bool autoSave() const;
-    void setAutoSave(bool enabled);
 
     // Core operations
     Q_INVOKABLE QList<Task*> load();
@@ -39,13 +36,15 @@ public:
     static Correction* jsonToCorrection(const QJsonObject &json, QObject *parent = nullptr);
     static ChecklistItem* jsonToItem(const QJsonObject &json, QObject *parent = nullptr);
 
+    // Schema versioning
+    static constexpr int SCHEMA_VERSION = 1;
+
     // Date formatting helpers (matches web format: yyyy-MM-dd)
     static QString dateToString(const QDate &date);
     static QDate stringToDate(const QString &str);
 
 signals:
     void filePathChanged();
-    void autoSaveChanged();
     void saved();
     void loaded();
     void error(const QString &message);
@@ -55,7 +54,6 @@ private:
     bool writeAtomic(const QByteArray &data);
 
     QString m_filePath;
-    bool m_autoSave;
 };
 
 #endif // JSONSTORAGE_H

@@ -15,10 +15,10 @@ RowLayout {
 
     spacing: Theme.spacingSmall
 
-    AppControls.StyledCheckBox {
+    StyledCheckBox {
         id: checkbox
         checked: root.itemDone
-        onCheckedChanged: root.toggled(checked)
+        onClicked: root.toggled(checked)
     }
 
     Text {

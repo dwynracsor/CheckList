@@ -8,8 +8,6 @@ ColumnLayout {
 
     property var tempItems: []
 
-    signal itemAdded(string text)
-
     function getItems() {
         return tempItems.slice()
     }
@@ -45,7 +43,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 spacing: Theme.spacingSmall
 
-                AppControls.StyledTextArea {
+                StyledTextArea {
                     id: itemInput
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
@@ -55,7 +53,7 @@ ColumnLayout {
                     Keys.onEnterPressed: addItemBtn.clicked()
                 }
 
-                AppControls.ButtonStyle {
+                ButtonStyle {
                     id: addItemBtn
                     text: "Agregar"
                     onClicked: {

@@ -19,6 +19,9 @@ private slots:
     void testTaskFromJson();
     void testSaveAndLoad();
     void testLoadNonExistentFile();
+    void testLoadCorruptedJson();
+    void testLoadEmptyArray();
+    void testLoadMissingFields();
 };
 
 void JsonStorageTests::testDateFormatting()
@@ -202,6 +205,59 @@ void JsonStorageTests::testLoadNonExistentFile()
     JsonStorage storage("/nonexistent/path/tasks.json");
     QList<Task*> tasks = storage.load();
     QCOMPARE(tasks.size(), 0);
+}
+
+void JsonStorageTests::testLoadCorruptedJson()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QString filePath = dir.filePath("corrupted.json");
+
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    file.write("{ this is not valid json }}}");
+    file.close();
+
+    JsonStorage storage(filePath);
+    QList<Task*> tasks = storage.load();
+    QCOMPARE(tasks.size(), 0);
+}
+
+void JsonStorageTests::testLoadEmptyArray()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QString filePath = dir.filePath("empty.json");
+
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    file.write("[]");
+    file.close();
+
+    JsonStorage storage(filePath);
+    QList<Task*> tasks = storage.load();
+    QCOMPARE(tasks.size(), 0);
+}
+
+void JsonStorageTests::testLoadMissingFields()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QString filePath = dir.filePath("minimal.json");
+
+    // Task with no items, no corrections, no date
+    QFile file(filePath);
+    file.open(QIODevice::WriteOnly);
+    file.write(R"([{"name": "Minimal Task"}])");
+    file.close();
+
+    JsonStorage storage(filePath);
+    QList<Task*> tasks = storage.load();
+    QCOMPARE(tasks.size(), 1);
+    QCOMPARE(tasks[0]->name(), QString("Minimal Task"));
+    QCOMPARE(tasks[0]->itemCount(), 0);
+    QCOMPARE(tasks[0]->correctionCount(), 0);
+    qDeleteAll(tasks);
 }
 
 QTEST_MAIN(JsonStorageTests)

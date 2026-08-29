@@ -20,8 +20,10 @@ ColumnLayout {
     signal correctionDeleted(int taskIdx, int corrIdx)
     signal correctionAdded(int taskIdx, string name)
 
-    // Get task from controller
-    property var task: taskController.getTask(root.taskIndex)
+    // Get task from controller — re-evaluates when taskIndex or taskCount changes
+    property var task: (taskController.taskCount > 0 && root.taskIndex >= 0 && root.taskIndex < taskController.taskCount)
+        ? taskController.getTask(root.taskIndex)
+        : null
 
     // Card background
     Rectangle {
@@ -66,7 +68,15 @@ ColumnLayout {
                     Text {
                         id: dateText
                         anchors.centerIn: parent
-                        text: "Creada: " + root.taskDate
+                        text: {
+                            var total = root.task ? root.task.itemCount : 0
+                            if (total === 0) return root.taskDate
+                            var done = 0
+                            for (var i = 0; i < total; i++) {
+                                if (root.task.getItem(i).done) done++
+                            }
+                            return Math.round(done / total * 100) + "% — " + root.taskDate
+                        }
                         font.pixelSize: Theme.fontSizeSmall
                         color: Theme.textMuted
                     }
@@ -101,7 +111,7 @@ ColumnLayout {
                 // Empty state for items
                 Text {
                     visible: root.taskItemCount === 0
-                    text: "Sin ítems"
+                    text: qsTr("Sin ítems")
                     font.pixelSize: Theme.fontSizeMedium
                     font.italic: true
                     color: Theme.textDisabled
@@ -112,7 +122,7 @@ ColumnLayout {
             // Add item row for mother task
             AddItemRow {
                 Layout.fillWidth: true
-                placeholderText: "Agregar ítem a esta corrección..."
+                placeholderText: qsTr("Agregar ítem a esta corrección...")
                 onAddItem: function(text) {
                     root.itemAdded(root.taskIndex, -1, text)
                 }
@@ -162,8 +172,8 @@ ColumnLayout {
 
                 Item { Layout.fillWidth: true }
 
-                AppControls.PrimaryButton {
-                    text: "+ Agregar corrección"
+                PrimaryButton {
+                    text: qsTr("+ Agregar corrección")
                     onClicked: {
                         // Show inline input for correction name
                         correctionNameInput.visible = true
@@ -179,16 +189,16 @@ ColumnLayout {
                 Layout.fillWidth: true
                 spacing: Theme.spacingSmall
 
-                AppControls.StyledTextField {
+                StyledTextField {
                     id: newCorrNameField
                     Layout.fillWidth: true
-                    placeholderText: "Nombre de la corrección..."
+                    placeholderText: qsTr("Nombre de la corrección...")
                     onAccepted: addCorrectionBtn.clicked()
                 }
 
-                AppControls.PrimaryButton {
+                PrimaryButton {
                     id: addCorrectionBtn
-                    text: "Agregar"
+                    text: qsTr("Agregar")
                     onClicked: {
                         var name = newCorrNameField.text.trim()
                         if (name !== "") {
@@ -199,8 +209,8 @@ ColumnLayout {
                     }
                 }
 
-                AppControls.ButtonStyle {
-                    text: "Cancelar"
+                ButtonStyle {
+                    text: qsTr("Cancelar")
                     onClicked: {
                         newCorrNameField.text = ""
                         correctionNameInput.visible = false
@@ -216,11 +226,19 @@ ColumnLayout {
 
                 Item { Layout.fillWidth: true }
 
-                AppControls.DangerButton {
-                    text: "Eliminar"
-                    onClicked: root.taskDeleted(root.taskIndex)
+                DangerButton {
+                    text: qsTr("Eliminar")
+                    onClicked: deleteTaskDialog.open()
                 }
             }
+        }
+
+        ConfirmationDialog {
+            id: deleteTaskDialog
+            titleText: "Eliminar tarea"
+            messageText: "¿Estás seguro de que quieres eliminar esta tarea? Esta acción se puede deshacer."
+            confirmText: "Eliminar"
+            onConfirmed: root.taskDeleted(root.taskIndex)
         }
     }
 }

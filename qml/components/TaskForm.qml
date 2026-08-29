@@ -26,16 +26,16 @@ ColumnLayout {
 
         // Name field
         Text {
-            text: "Nombre de la corrección"
+            text: qsTr("Nombre de la corrección")
             font.pixelSize: Theme.fontSizeSmall
             font.weight: Theme.fontWeightMedium
             color: Theme.textSecondary
         }
 
-        AppControls.StyledTextField {
+        StyledTextField {
             id: nameField
             Layout.fillWidth: true
-            placeholderText: "Ej: Preparar presentación"
+            placeholderText: qsTr("Ej: Preparar presentación")
             onAccepted: saveTaskBtn.clicked()
         }
 
@@ -47,9 +47,9 @@ ColumnLayout {
         }
 
         // Save button
-        AppControls.SuccessButton {
+        SuccessButton {
             id: saveTaskBtn
-            text: "Guardar corrección"
+            text: qsTr("Guardar corrección")
             Layout.fillWidth: true
             Layout.topMargin: Theme.spacingSmall
             onClicked: {

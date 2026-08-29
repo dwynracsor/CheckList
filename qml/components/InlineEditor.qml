@@ -47,7 +47,7 @@ RowLayout {
     }
 
     // Edit mode
-    AppControls.StyledTextField {
+    StyledTextField {
         id: editField
         visible: root.editing
         Layout.fillWidth: true
@@ -58,7 +58,7 @@ RowLayout {
         Keys.onEscapePressed: cancelEdit()
     }
 
-    AppControls.PrimaryButton {
+    PrimaryButton {
         visible: root.editing
         text: "Guardar"
         onClicked: saveEdit()

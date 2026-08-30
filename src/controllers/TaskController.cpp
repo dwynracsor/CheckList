@@ -312,6 +312,38 @@ void TaskController::toggleItemInTask(int taskIndex, int itemIndex, bool done)
     }
 }
 
+void TaskController::setItemTextInTask(int taskIndex, int itemIndex, const QString &text)
+{
+    Task *task = getTask(taskIndex);
+    if (!task) return;
+
+    ChecklistItem *item = task->getItem(itemIndex);
+    if (!item) return;
+
+    QString newText = text.trimmed();
+    QString oldText = item->text();
+    if (oldText == newText || newText.isEmpty()) return;
+
+    item->setText(newText);
+    scheduleAutoSave();
+
+    auto undoCmd = [this, taskIndex, itemIndex, oldText]() {
+        Task *t = getTask(taskIndex);
+        if (t) {
+            ChecklistItem *i = t->getItem(itemIndex);
+            if (i) i->setText(oldText);
+        }
+    };
+    auto redoCmd = [this, taskIndex, itemIndex, newText]() {
+        Task *t = getTask(taskIndex);
+        if (t) {
+            ChecklistItem *i = t->getItem(itemIndex);
+            if (i) i->setText(newText);
+        }
+    };
+    pushUndo(std::make_shared<UndoCommand>("Editar ítem", undoCmd, redoCmd));
+}
+
 // --- Correction Operations on Task ---
 
 Correction* TaskController::addCorrectionToTask(int taskIndex, const QString &name)

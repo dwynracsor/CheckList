@@ -49,6 +49,7 @@ public:
     Q_INVOKABLE void addItemToTask(int taskIndex, const QString &text);
     Q_INVOKABLE void removeItemFromTask(int taskIndex, int itemIndex);
     Q_INVOKABLE void toggleItemInTask(int taskIndex, int itemIndex, bool done);
+    Q_INVOKABLE void setItemTextInTask(int taskIndex, int itemIndex, const QString &text);
 
     // Correction operations on task
     Q_INVOKABLE Correction* addCorrectionToTask(int taskIndex, const QString &name);

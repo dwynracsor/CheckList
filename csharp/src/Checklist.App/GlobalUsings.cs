@@ -1,0 +1,1 @@
+global using Task = Checklist.Domain.Task;

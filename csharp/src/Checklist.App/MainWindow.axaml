@@ -1,0 +1,533 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Checklist.App.MainWindow"
+        Title="CheckList"
+        Width="420" Height="800"
+        MinWidth="380" MinHeight="560"
+        FontFamily="{DynamicResource MonoFont}"
+        FontSize="12.5"
+        Background="{DynamicResource BgPrimary}">
+
+  <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*">
+
+    <!-- ============ FILA 0: cabecera ============ -->
+    <Grid Grid.Row="0"
+          ColumnDefinitions="Auto,Auto,*,Auto"
+          Margin="0,0,0,14">
+
+      <!-- Nombre de la app: solo "Check" tachado -->
+      <SelectableTextBlock Grid.Column="0"
+                 Classes="appTitle"
+                 VerticalAlignment="Center">
+        <Run Text="Check" TextDecorations="Strikethrough"/>
+        <Run Text="List"/>
+      </SelectableTextBlock>
+
+      <!-- Botón de modo claro / modo oscuro -->
+      <ToggleButton Grid.Column="1"
+                    Classes="switch"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding IsDarkMode, Mode=TwoWay}"
+                    ToolTip.Tip="Light / dark mode"/>
+
+      <!-- Icono de notificaciones con badge -->
+      <Button Grid.Column="3"
+              x:Name="BellButton"
+              Classes="icon"
+              Width="32" Height="30"
+              Padding="0"
+              Command="{Binding ToggleNotificationsCommand}"
+              ToolTip.Tip="Abrir notificaciones">
+        <Panel Width="32" Height="30">
+          <Path Data="M12,22c1.1,0 2,-0.9 2,-2h-4c0,1.1 0.9,2 2,2zM18,16v-5c0,-3.07 -1.63,-5.64 -4.5,-6.32L13.5,4c0,-0.83 -0.67,-1.5 -1.5,-1.5S10.5,3.17 10.5,4v0.68C7.64,5.36 6,7.92 6,11v5l-2,2v1h16v-1l-2,-2z"
+                Fill="{DynamicResource TextPrimary}"
+                Stretch="Uniform"
+                Width="19" Height="19"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"/>
+          <Border Background="{DynamicResource BadgeRed}"
+                  CornerRadius="0"
+                  Width="16" Height="16"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top">
+            <SelectableTextBlock Text="{Binding AlertCount}"
+                       FontSize="10"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+          </Border>
+        </Panel>
+      </Button>
+
+      <!-- Panel de notificaciones -->
+      <Popup IsOpen="{Binding IsNotificationsOpen, Mode=TwoWay}"
+             PlacementTarget="{Binding #BellButton}"
+             Placement="Bottom"
+             HorizontalOffset="-180"
+             VerticalOffset="4">
+        <Border Classes="popup">
+          <ScrollViewer MaxHeight="320" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="8" MinWidth="240">
+              <SelectableTextBlock Classes="section" Text="Notifications" Margin="0,0,0,2"/>
+              <SelectableTextBlock Text="No pending alerts"
+                         Classes="popupEmpty"
+                         IsVisible="{Binding !HasAlerts}"/>
+              <ItemsControl ItemsSource="{Binding Alerts}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Classes="alertCard">
+                      <StackPanel Spacing="5">
+                        <SelectableTextBlock Classes="alertName" Text="{Binding ListName}"/>
+                        <SelectableTextBlock Classes="date" Text="{Binding PendingText}"/>
+                        <SelectableTextBlock Classes="date" Text="{Binding CreatedText}"/>
+                        <Button Classes="soft"
+                                Content="Dismiss"
+                                Command="{Binding DismissCommand}"/>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </Popup>
+    </Grid>
+
+    <!-- ============ FILA 1: barra de búsqueda ============ -->
+    <TextBox Grid.Row="1"
+             Classes="field"
+             Watermark="Search list"
+             Text="{Binding SearchText, Mode=TwoWay}"
+             Margin="0,0,0,12"/>
+
+    <!-- ============ FILA 2: agrupación y filtros ============ -->
+    <StackPanel Grid.Row="2" Margin="0,0,0,12" Spacing="8">
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+        <ComboBox Grid.Column="0"
+                  Classes="field"
+                  ItemsSource="{Binding GroupModeOptions}"
+                  SelectedIndex="{Binding GroupModeIndex, Mode=TwoWay}"
+                  ToolTip.Tip="Group lists"/>
+        <ComboBox Grid.Column="1"
+                  Classes="field"
+                  ItemsSource="{Binding DateFilterOptions}"
+                  SelectedIndex="{Binding DateFilterIndex, Mode=TwoWay}"
+                  ToolTip.Tip="Filter by creation date"/>
+      </Grid>
+      <Grid ColumnDefinitions="Auto,*,Auto,*"
+            ColumnSpacing="6"
+            IsVisible="{Binding IsCustomRange}">
+        <SelectableTextBlock Grid.Column="0"
+                   Classes="date"
+                   Text="From"
+                   VerticalAlignment="Center"/>
+        <CalendarDatePicker Grid.Column="1"
+                            SelectedDate="{Binding FilterFrom, Mode=TwoWay}"/>
+        <SelectableTextBlock Grid.Column="2"
+                   Classes="date"
+                   Text="To"
+                   VerticalAlignment="Center"/>
+        <CalendarDatePicker Grid.Column="3"
+                            SelectedDate="{Binding FilterTo, Mode=TwoWay}"/>
+      </Grid>
+    </StackPanel>
+
+    <!-- ============ FILA 3: encabezado "Create list" ============ -->
+    <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+      <SelectableTextBlock Grid.Column="0"
+                 Classes="section"
+                 Text="Create list"
+                 VerticalAlignment="Center"/>
+      <Button Grid.Column="2"
+              Classes="icon"
+              Content="{Binding ChevronGlyph}"
+              Command="{Binding ToggleCreateCommand}"
+              ToolTip.Tip="Show / hide the create block"/>
+    </Grid>
+
+    <!-- ============ FILA 4: bloque "Create list" ============ -->
+    <Border Grid.Row="4"
+            Classes="card"
+            Margin="0,0,0,16"
+            IsVisible="{Binding IsCreateExpanded}">
+      <StackPanel Spacing="10">
+
+        <!-- Nombre que va a tener la lista -->
+        <TextBox Classes="field"
+                 Watermark="List name"
+                 Text="{Binding DraftName, Mode=TwoWay}"/>
+
+        <!-- Tema / categoría (opcional) + desplegable de temas existentes -->
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+          <TextBox Grid.Column="0"
+                   Classes="field"
+                   Watermark="Theme (optional)"
+                   TextWrapping="Wrap"
+                   Text="{Binding DraftCategory, Mode=TwoWay}"/>
+          <ComboBox Grid.Column="1"
+                    MinWidth="46"
+                    Classes="field"
+                    ItemsSource="{Binding DraftThemeOptions}"
+                    SelectedItem="{Binding SelectedDraftTheme, Mode=TwoWay}"
+                    ToolTip.Tip="Pick an existing theme"/>
+        </Grid>
+
+        <!-- Contenido del item + botón para agregarlo -->
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Grid.Column="0"
+                   Classes="field"
+                   Watermark="Item description"
+                   Text="{Binding DraftItemText, Mode=TwoWay}"
+                   TextWrapping="Wrap"
+                   Margin="0,0,10,0"/>
+          <Button Grid.Column="1"
+                  Classes="plus"
+                  Content="+"
+                  Command="{Binding AddDraftItemCommand}"
+                  ToolTip.Tip="Add an item to the list you are creating"/>
+        </Grid>
+
+        <!-- Bloque donde se alojan los items ya creados -->
+        <ItemsControl ItemsSource="{Binding DraftItems}"
+                      IsVisible="{Binding HasDraftItems}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid ColumnDefinitions="*,Auto" Margin="0,6">
+                <SelectableTextBlock Grid.Column="0"
+                           Classes="item"
+                           Text="{Binding Text}"
+                           Margin="0,0,10,0"
+                           VerticalAlignment="Center"/>
+                <Button Grid.Column="1"
+                        Classes="iconx"
+                        Content="x"
+                        Command="{Binding DeleteCommand}"/>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Crear definitivamente la lista -->
+        <Button Classes="primary"
+                Content="Create list"
+                Command="{Binding CreateListCommand}"
+                IsEnabled="{Binding CanCreate}"/>
+      </StackPanel>
+    </Border>
+
+    <!-- ============ FILA 5: "My lists" ============ -->
+    <SelectableTextBlock Grid.Row="5"
+               Classes="section"
+               Text="My lists"
+               Margin="0,0,0,10"/>
+
+    <!-- ============ FILA 6: listas agrupadas ============ -->
+    <Grid Grid.Row="6">
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding Groups}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Margin="0,0,0,18">
+                <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,8">
+                  <SelectableTextBlock Grid.Column="0"
+                             Classes="groupName"
+                             Text="{Binding Name}"/>
+                  <SelectableTextBlock Grid.Column="1"
+                             Classes="groupCount"
+                             Text="{Binding Count}"
+                             Margin="8,0,0,0"
+                             VerticalAlignment="Center"/>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding Lists}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Classes="card" Margin="0,0,0,12">
+                        <StackPanel Spacing="10">
+
+                          <!-- Cabecera: nombre / tema / lápiz / "−" / "✕" -->
+                          <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto">
+
+                            <SelectableTextBlock Grid.Column="0"
+                                       Classes="listName"
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding !IsEditingName}"/>
+
+                            <TextBox Grid.Column="1"
+                                     Classes="inlineName"
+                                     Text="{Binding EditName, Mode=TwoWay}"
+                                     MinWidth="140"
+                                     IsVisible="{Binding IsEditingName}">
+                              <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding CommitRenameCommand}"/>
+                                <KeyBinding Gesture="Escape" Command="{Binding CancelRenameCommand}"/>
+                              </TextBox.KeyBindings>
+                            </TextBox>
+
+                            <!-- Botón lápiz: editar el nombre de la lista -->
+                            <Button Grid.Column="2"
+                                    Classes="icon muted"
+                                    Content="&#x270E;"
+                                    Margin="6,0,0,0"
+                                    Command="{Binding ToggleRenameCommand}"
+                                    ToolTip.Tip="Edit the name of the list"/>
+
+                            <!-- Tema de la lista -->
+                            <Border Grid.Column="3"
+                                    Classes="tag"
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{Binding !IsEditingCategory}">
+                              <StackPanel Orientation="Horizontal">
+                                <SelectableTextBlock Text="{Binding Category}"
+                                           FontSize="10.5"
+                                           IsVisible="{Binding HasCategory}"/>
+                                <SelectableTextBlock Text="No theme"
+                                           FontSize="10.5"
+                                           Classes="date"
+                                           IsVisible="{Binding !HasCategory}"/>
+                              </StackPanel>
+                            </Border>
+
+                            <TextBox Grid.Column="3"
+                                     Classes="inlineName"
+                                     Text="{Binding EditCategory, Mode=TwoWay}"
+                                     MinWidth="120"
+                                     IsVisible="{Binding IsEditingCategory}">
+                              <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding CommitCategoryCommand}"/>
+                                <KeyBinding Gesture="Escape" Command="{Binding CancelCategoryCommand}"/>
+                              </TextBox.KeyBindings>
+                            </TextBox>
+
+                            <!-- Botón lápiz: editar el tema -->
+                            <Button Grid.Column="4"
+                                    Classes="icon muted"
+                                    Content="&#x270E;"
+                                    Margin="4,0,0,0"
+                                    Command="{Binding ToggleCategoryCommand}"
+                                    ToolTip.Tip="Edit the theme of the list"/>
+
+                            <!-- Minimizar la lista -->
+                            <Button Grid.Column="5"
+                                    Classes="icon strong"
+                                    Content="{Binding CollapseGlyph}"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding ToggleCollapseCommand}"
+                                    ToolTip.Tip="Collapse / expand the list"/>
+
+                            <!-- Eliminar la lista -->
+                            <Button Grid.Column="6"
+                                    Classes="icon strong"
+                                    Content="&#x2715;"
+                                    Command="{Binding DeleteCommand}"
+                                    ToolTip.Tip="Delete the list"/>
+                          </Grid>
+
+                          <!-- Items de la lista -->
+                          <ItemsControl ItemsSource="{Binding Items}"
+                                        IsVisible="{Binding !IsCollapsed}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,*,Auto" Classes="itemRow" Margin="0,6">
+                                  <Grid.ContextMenu>
+                                    <ContextMenu>
+                                      <MenuItem Header="Edit item" Command="{Binding EditCommand}"/>
+                                      <MenuItem Header="Copy item" Command="{Binding CopyCommand}"/>
+                                    </ContextMenu>
+                                  </Grid.ContextMenu>
+                                  <ToggleButton Grid.Column="0"
+                                                Classes="check"
+                                                IsChecked="{Binding IsCompleted, Mode=TwoWay}"/>
+                                  <TextBox Grid.Column="1"
+                                           Classes="field"
+                                           Watermark="Item"
+                                           Text="{Binding EditText, Mode=TwoWay}"
+                                           TextWrapping="Wrap"
+                                           IsVisible="{Binding IsEditing}"
+                                           Margin="10,0,10,0">
+                                    <TextBox.KeyBindings>
+                                      <KeyBinding Gesture="Enter" Command="{Binding CommitEditCommand}"/>
+                                      <KeyBinding Gesture="Escape" Command="{Binding CancelEditCommand}"/>
+                                    </TextBox.KeyBindings>
+                                  </TextBox>
+                                  <SelectableTextBlock Grid.Column="1"
+                                             Classes="item"
+                                             Classes.completed="{Binding IsCompleted}"
+                                             Text="{Binding Text}"
+                                             Margin="10,0,10,0"
+                                             IsVisible="{Binding !IsEditing}"/>
+                                  <Button Grid.Column="2"
+                                          Classes="iconx"
+                                          Content="x"
+                                          Command="{Binding DeleteCommand}"
+                                          ToolTip.Tip="Delete this item"/>
+                                </Grid>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+
+                          <!-- Fila inline para escribir el nuevo item -->
+                          <Grid ColumnDefinitions="*,Auto"
+                                IsVisible="{Binding IsAddingItem}">
+<TextBox Grid.Column="0"
+                     Classes="field"
+                     Watermark="Item description"
+                     Text="{Binding NewItemText, Mode=TwoWay}"
+                     TextWrapping="Wrap"
+                     Margin="0,0,10,0">
+                              <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding AddItemCommand}"/>
+                              </TextBox.KeyBindings>
+                            </TextBox>
+                            <Button Grid.Column="1"
+                                    Classes="plus"
+                                    Content="+"
+                                    Command="{Binding AddItemCommand}"/>
+                          </Grid>
+
+                          <!-- Barra para agregar nuevo item a la lista -->
+                          <Button Classes="soft"
+                                  Content="+ New item"
+                                  Command="{Binding ToggleAddItemCommand}"
+                                  IsVisible="{Binding !IsCollapsed}"/>
+
+                          <!-- Correcciones -->
+                          <ItemsControl ItemsSource="{Binding Corrections}"
+                                        IsVisible="{Binding !IsCollapsed}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate>
+                                <Border Classes="corrBlock" Margin="0,4,0,0">
+                                  <StackPanel Spacing="6">
+
+                                    <!-- Cabecera de la corrección -->
+                                    <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+                                      <SelectableTextBlock Grid.Column="0"
+                                                 Classes="corrTitle"
+                                                 Text="{Binding Name}"
+                                                 VerticalAlignment="Center"
+                                                 IsVisible="{Binding !IsEditingName}"/>
+
+                                      <TextBox Grid.Column="0"
+                                               Classes="inlineName"
+                                               Text="{Binding EditName, Mode=TwoWay}"
+                                               MinWidth="120"
+                                               IsVisible="{Binding IsEditingName}">
+                                        <TextBox.KeyBindings>
+                                          <KeyBinding Gesture="Enter" Command="{Binding CommitRenameCommand}"/>
+                                          <KeyBinding Gesture="Escape" Command="{Binding CancelRenameCommand}"/>
+                                        </TextBox.KeyBindings>
+                                      </TextBox>
+
+                                      <Button Grid.Column="1"
+                                              Classes="icon muted"
+                                              Content="&#x270E;"
+                                              Margin="6,0,0,0"
+                                              Command="{Binding ToggleRenameCommand}"
+                                              ToolTip.Tip="Edit the name of the correction"/>
+
+                                      <Button Grid.Column="3"
+                                              Classes="icon strong"
+                                              Content="&#x2715;"
+                                              Command="{Binding DeleteCommand}"
+                                              ToolTip.Tip="Delete the correction"/>
+                                    </Grid>
+
+                                    <!-- Items de la corrección -->
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                      <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                          <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,6">
+                                            <ToggleButton Grid.Column="0"
+                                                          Classes="check"
+                                                          IsChecked="{Binding IsCompleted, Mode=TwoWay}"/>
+                                            <SelectableTextBlock Grid.Column="1"
+                                                       Classes="item"
+                                                       Classes.completed="{Binding IsCompleted}"
+                                                       Text="{Binding Text}"
+                                                       Margin="10,0,10,0"/>
+                                            <Button Grid.Column="2"
+                                                    Classes="iconx"
+                                                    Content="x"
+                                                    Command="{Binding DeleteCommand}"
+                                                    ToolTip.Tip="Delete this item"/>
+                                          </Grid>
+                                        </DataTemplate>
+                                      </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Fila inline para nuevo item de la corrección -->
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          IsVisible="{Binding IsAddingItem}">
+                                      <TextBox Grid.Column="0"
+                                               Classes="field"
+                                               Watermark="Item description"
+                                               Text="{Binding NewItemText, Mode=TwoWay}"
+                                               Margin="0,0,10,0">
+                                        <TextBox.KeyBindings>
+                                          <KeyBinding Gesture="Enter" Command="{Binding AddItemCommand}"/>
+                                        </TextBox.KeyBindings>
+                                      </TextBox>
+                                      <Button Grid.Column="1"
+                                              Classes="plus"
+                                              Content="+"
+                                              Command="{Binding AddItemCommand}"/>
+                                    </Grid>
+
+                                    <Button Classes="soft"
+                                            Content="+ New item"
+                                            Command="{Binding ToggleAddItemCommand}"/>
+                                  </StackPanel>
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+
+                          <!-- Barra de progreso + % + fecha de creación -->
+                          <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,2,0,0">
+                            <ProgressBar Grid.Column="0"
+                                         Classes="pill"
+                                         Minimum="0"
+                                         Maximum="100"
+                                         Value="{Binding ProgressPercent}"
+                                         VerticalAlignment="Center"/>
+                            <SelectableTextBlock Grid.Column="1"
+                                       Classes="percent"
+                                       Text="{Binding ProgressPercent, StringFormat={}{0}%}"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center"/>
+                            <SelectableTextBlock Grid.Column="2"
+                                       Classes="date"
+                                       Text="{Binding CreatedAtText}"
+                                       Margin="12,0,0,0"
+                                       VerticalAlignment="Center"/>
+                          </Grid>
+
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+      <!-- Estado vacío -->
+      <SelectableTextBlock Text="No lists yet — create your first one above"
+                 Foreground="{DynamicResource TextSecondary}"
+                 FontSize="12.5"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Top"
+                 Margin="0,24,0,0"
+                 IsVisible="{Binding !HasLists}"/>
+    </Grid>
+
+  </Grid>
+</Window>

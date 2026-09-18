@@ -1,0 +1,585 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prims="using:Avalonia.Controls.Primitives">
+
+  <Styles.Resources>
+    <ResourceDictionary>
+
+      <!-- Tipografía monoespaciada con cadena de fallbacks del sistema -->
+      <FontFamily x:Key="MonoFont">JetBrains Mono, Cascadia Mono, DejaVu Sans Mono, Liberation Mono, Consolas, Menlo, monospace</FontFamily>
+
+      <ResourceDictionary.ThemeDictionaries>
+
+        <!-- ================= MODO CLARO ================= -->
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="BgPrimary"     Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="BgCard"        Color="#F5F5F5"/>
+          <SolidColorBrush x:Key="BgInput"       Color="#F2F2F2"/>
+          <SolidColorBrush x:Key="TextPrimary"   Color="#111111"/>
+          <SolidColorBrush x:Key="TextSecondary" Color="#9E9E9E"/>
+          <SolidColorBrush x:Key="TextCompleted" Color="#BDBDBD"/>
+          <SolidColorBrush x:Key="IconMuted"     Color="#B0B0B0"/>
+          <SolidColorBrush x:Key="AccentBg"      Color="#111111"/>
+          <SolidColorBrush x:Key="AccentFg"      Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="AccentBgHover" Color="#2A2A2A"/>
+          <SolidColorBrush x:Key="DisabledBg"    Color="#D0D0D0"/>
+          <SolidColorBrush x:Key="DisabledFg"    Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="CheckBorder"   Color="#C7C7C7"/>
+          <SolidColorBrush x:Key="CheckFill"     Color="#111111"/>
+          <SolidColorBrush x:Key="ProgressTrack" Color="#E0E0E0"/>
+          <SolidColorBrush x:Key="ProgressFill"  Color="#111111"/>
+          <SolidColorBrush x:Key="SwitchOff"     Color="#D7D7D7"/>
+          <SolidColorBrush x:Key="SwitchOn"      Color="#111111"/>
+          <SolidColorBrush x:Key="SwitchKnob"    Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="BadgeRed"      Color="#E53935"/>
+          <SolidColorBrush x:Key="DangerHover"   Color="#E53935"/>
+        </ResourceDictionary>
+
+        <!-- ================= MODO OSCURO ================= -->
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="BgPrimary"     Color="#121212"/>
+          <SolidColorBrush x:Key="BgCard"        Color="#1A1A1A"/>
+          <SolidColorBrush x:Key="BgInput"       Color="#1E1E1E"/>
+          <SolidColorBrush x:Key="TextPrimary"   Color="#F2F2F2"/>
+          <SolidColorBrush x:Key="TextSecondary" Color="#777777"/>
+          <SolidColorBrush x:Key="TextCompleted" Color="#6A6A6A"/>
+          <SolidColorBrush x:Key="IconMuted"     Color="#5A5A5A"/>
+          <SolidColorBrush x:Key="AccentBg"      Color="#F2F2F2"/>
+          <SolidColorBrush x:Key="AccentFg"      Color="#111111"/>
+          <SolidColorBrush x:Key="AccentBgHover" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="DisabledBg"    Color="#3A3A3A"/>
+          <SolidColorBrush x:Key="DisabledFg"    Color="#888888"/>
+          <SolidColorBrush x:Key="CheckBorder"   Color="#4A4A4A"/>
+          <SolidColorBrush x:Key="CheckFill"     Color="#F2F2F2"/>
+          <SolidColorBrush x:Key="ProgressTrack" Color="#333333"/>
+          <SolidColorBrush x:Key="ProgressFill"  Color="#F2F2F2"/>
+          <SolidColorBrush x:Key="SwitchOff"     Color="#3A3A3A"/>
+          <SolidColorBrush x:Key="SwitchOn"      Color="#F2F2F2"/>
+          <SolidColorBrush x:Key="SwitchKnob"    Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="BadgeRed"      Color="#E53935"/>
+          <SolidColorBrush x:Key="DangerHover"   Color="#FF6B60"/>
+        </ResourceDictionary>
+
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <!-- ==================== TEXTO ==================== -->
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+
+  <Style Selector="TextBlock.appTitle">
+    <Setter Property="FontSize" Value="19"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+  </Style>
+
+  <Style Selector="TextBlock.section">
+    <Setter Property="FontSize" Value="15"/>
+    <Setter Property="FontWeight" Value="Medium"/>
+  </Style>
+
+  <Style Selector="TextBlock.listName">
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="FontWeight" Value="Medium"/>
+  </Style>
+
+  <Style Selector="TextBlock.date">
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+    <Setter Property="FontSize" Value="11"/>
+  </Style>
+
+  <!-- Título de una corrección dentro de la tarjeta -->
+  <Style Selector="TextBlock.corrTitle">
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+
+  <!-- Texto de item: gris y tachado cuando está completado -->
+  <Style Selector="TextBlock.item">
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="LineHeight" Value="18"/>
+  </Style>
+  <Style Selector="TextBlock.item.completed">
+    <Setter Property="Foreground" Value="{DynamicResource TextCompleted}"/>
+    <Setter Property="TextDecorations" Value="Strikethrough"/>
+  </Style>
+
+  <!-- ==================== TEXTBOX (inputs) ==================== -->
+
+  <Style Selector="TextBox.field">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="CaretBrush" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="14,10"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+  <Style Selector="TextBox.field /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+  </Style>
+  <Style Selector="TextBox.field:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+  <Style Selector="TextBox.field:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+  <Style Selector="TextBox.field TextBlock#PART_Watermark">
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+  </Style>
+  <Style Selector="TextBox.field /template/ TextBlock#PART_Watermark">
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+  </Style>
+
+  <!-- Input inline para renombrar: nombre de lista o corrección -->
+  <Style Selector="TextBox.inlineName">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="8"/>
+    <Setter Property="Padding" Value="8,4"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="FontSize" Value="14"/>
+  </Style>
+  <Style Selector="TextBox.inlineName /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="8"/>
+  </Style>
+
+  <!-- ==================== BOTONES ==================== -->
+
+  <!-- Botón "+" circular -->
+  <Style Selector="Button.plus">
+    <Setter Property="Width" Value="40"/>
+    <Setter Property="Height" Value="40"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="CornerRadius" Value="20"/>
+    <Setter Property="Background" Value="{DynamicResource AccentBg}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="FontSize" Value="19"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+  <Style Selector="Button.plus /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentBg}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="20"/>
+  </Style>
+  <Style Selector="Button.plus:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentBgHover}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+  </Style>
+
+  <!-- Botón ancho gris: "+ New item", "+ Add correction" -->
+  <Style Selector="Button.soft">
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="10"/>
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+  <Style Selector="Button.soft /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+  </Style>
+  <Style Selector="Button.soft:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+
+  <!-- Botón primario: "Crear lista" -->
+  <Style Selector="Button.primary">
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="Background" Value="{DynamicResource AccentBg}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="10"/>
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+  <Style Selector="Button.primary /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentBg}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentBgHover}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+  </Style>
+  <Style Selector="Button.primary:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource DisabledBg}"/>
+    <Setter Property="Foreground" Value="{DynamicResource DisabledFg}"/>
+  </Style>
+
+  <!-- Botón icono plano (lápiz, chevron, "−", "✕") -->
+  <Style Selector="Button.icon">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="4,0"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style Selector="Button.icon /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+  <Style Selector="Button.icon:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+
+  <!-- Variante atenuada: lápiz -->
+  <Style Selector="Button.icon.muted /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+  </Style>
+  <Style Selector="Button.icon.muted:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+
+  <!-- Variante bold: "−" y "✕" de la cabecera de lista -->
+  <Style Selector="Button.icon.strong">
+    <Setter Property="FontSize" Value="16"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+  </Style>
+
+  <!-- "x" pequeña gris para borrar un item -->
+  <Style Selector="Button.iconx">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="4,0"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="VerticalAlignment" Value="Top"/>
+  </Style>
+  <Style Selector="Button.iconx /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource IconMuted}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+  <Style Selector="Button.iconx:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource DangerHover}"/>
+  </Style>
+
+  <!-- ==================== CHECKBOX CUADRADO ==================== -->
+  <!-- ToggleButton con plantilla propia: cuadrado con esquinas
+       redondeadas, relleno sólido cuando está marcado (sin glifo). -->
+
+  <Style Selector="ToggleButton.check">
+    <Setter Property="Width" Value="18"/>
+    <Setter Property="Height" Value="18"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="VerticalAlignment" Value="Top"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="box"
+                Background="Transparent"
+                BorderBrush="{DynamicResource CheckBorder}"
+                BorderThickness="2"
+                CornerRadius="4"/>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="ToggleButton.check:checked /template/ Border#box">
+    <Setter Property="Background" Value="{DynamicResource CheckFill}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource CheckFill}"/>
+  </Style>
+
+  <!-- ==================== TOGGLE SWITCH (tema) ==================== -->
+
+  <Style Selector="ToggleButton.switch">
+    <Setter Property="Width" Value="40"/>
+    <Setter Property="Height" Value="22"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="track"
+                Background="{DynamicResource SwitchOff}"
+                CornerRadius="11">
+          <Ellipse Name="knob"
+                   Width="18" Height="18"
+                   Fill="{DynamicResource SwitchKnob}"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Margin="2,0,0,0"/>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="ToggleButton.switch:checked /template/ Border#track">
+    <Setter Property="Background" Value="{DynamicResource SwitchOn}"/>
+  </Style>
+  <Style Selector="ToggleButton.switch:checked /template/ Ellipse#knob">
+    <Setter Property="HorizontalAlignment" Value="Right"/>
+    <Setter Property="Margin" Value="0,0,2,0"/>
+  </Style>
+
+  <!-- ==================== TARJETAS ==================== -->
+
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+    <Setter Property="CornerRadius" Value="14"/>
+    <Setter Property="Padding" Value="16,14"/>
+  </Style>
+
+  <!-- Bloque de corrección dentro de la tarjeta -->
+  <Style Selector="Border.corrBlock">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="12,10"/>
+  </Style>
+
+  <Style Selector="TextBlock.groupName">
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+  <Style Selector="TextBlock.groupCount">
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+  </Style>
+
+  <Style Selector="TextBlock.percent">
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="FontWeight" Value="Medium"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+  </Style>
+
+  <!-- Chip de tema de una lista -->
+  <Style Selector="Border.tag">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="CornerRadius" Value="6"/>
+    <Setter Property="Padding" Value="7,2"/>
+  </Style>
+
+  <!-- ==================== POPUP DE NOTIFICACIONES ==================== -->
+
+  <Style Selector="Border.popup">
+    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="14"/>
+    <Setter Property="Padding" Value="14,12"/>
+    <Setter Property="BoxShadow" Value="0 6 20 0 #40000000"/>
+  </Style>
+
+  <Style Selector="Border.alertCard">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="10"/>
+  </Style>
+
+  <Style Selector="TextBlock.alertName">
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+  <Style Selector="TextBlock.popupEmpty">
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+  </Style>
+
+  <!-- ==================== COMBOBOX (selectores) ==================== -->
+
+  <Style Selector="ComboBox.field">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="12,8"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+  <Style Selector="ComboBox.field /template/ Border#PART_BackDrop">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="12"/>
+  </Style>
+
+  <!-- ==================== MENÚ CONTEXTUAL (clic derecho) ==================== -->
+
+  <Style Selector="ContextMenu">
+    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+  <Style Selector="MenuItem">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="Padding" Value="14,8"/>
+    <Setter Property="MinWidth" Value="120"/>
+  </Style>
+  <Style Selector="MenuItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+  <Style Selector="MenuItem:pointerover /template/ Border#layoutRoot">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+  </Style>
+  <Style Selector="MenuItem /template/ TextBlock#PART_HeaderPresenter">
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+
+  <!-- "x" de eliminar item: solo visible cuando el cursor está sobre el item -->
+  <Style Selector="Grid.itemRow Button.iconx">
+    <Setter Property="Opacity" Value="0"/>
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+      </Transitions>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.itemRow:pointerover Button.iconx">
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+
+  <!-- ==================== BARRA DE PROGRESO ==================== -->
+
+  <Style Selector="ProgressBar.pill">
+    <Setter Property="Height" Value="8"/>
+    <Setter Property="MinHeight" Value="8"/>
+    <Setter Property="CornerRadius" Value="4"/>
+    <Setter Property="Background" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="Foreground" Value="{DynamicResource ProgressFill}"/>
+  </Style>
+  <Style Selector="ProgressBar.pill /template/ Border#PART_Indicator">
+    <Setter Property="CornerRadius" Value="4"/>
+  </Style>
+
+  <!-- ==================== SCROLLBAR ==================== -->
+
+  <Style Selector="ScrollViewer">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+
+  <!-- ==================== TOOLTIP ==================== -->
+
+  <Style Selector="ToolTip">
+    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="8"/>
+    <Setter Property="Padding" Value="8,5"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12"/>
+  </Style>
+
+  <!-- ==================== DESPLEGABLES (ComboBox) ==================== -->
+  <!-- Lista que se abre dentro del popup del ComboBox y otros desplegables -->
+
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="6"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+
+  <Style Selector="ListBoxItem">
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+    <Setter Property="Padding" Value="10,7"/>
+    <Setter Property="CornerRadius" Value="6"/>
+  </Style>
+  <Style Selector="ListBoxItem:selected, ListBoxItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
+  <Style Selector="ListBoxItem:selected /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+  </Style>
+  <Style Selector="ListBoxItem:pointerover /template/ Border#Root">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+  </Style>
+
+  <!-- ==================== CALENDARIO (selector de fecha) ==================== -->
+
+  <Style Selector="CalendarDatePicker">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource ProgressTrack}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="8,4"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+
+  <Style Selector="Calendar">
+    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+
+  <Style Selector="prims|CalendarDayButton">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+  <Style Selector="prims|CalendarDayButton:selected, prims|CalendarDayButton:pointerover">
+    <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+  </Style>
+  <Style Selector="prims|CalendarDayButton:selected">
+    <Setter Property="Background" Value="{DynamicResource AccentBg}"/>
+    <Setter Property="Foreground" Value="{DynamicResource AccentFg}"/>
+  </Style>
+
+  <Style Selector="prims|CalendarButton">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+    <Setter Property="FontSize" Value="12.5"/>
+  </Style>
+
+</Styles>

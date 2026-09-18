@@ -1,0 +1,12 @@
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.AssemblyInfoInputs.cache
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.AssemblyInfo.cs
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.csproj.CoreCompileInputs.cache
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.sourcelink.json
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\bin\Debug\net8.0\Checklist.Core.deps.json
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\bin\Debug\net8.0\Checklist.Core.dll
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\bin\Debug\net8.0\Checklist.Core.pdb
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.dll
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\refint\Checklist.Core.dll
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\Checklist.Core.pdb
+C:\Projects\Programing\CheckList\csharp\src\Checklist.Core\obj\Debug\net8.0\ref\Checklist.Core.dll

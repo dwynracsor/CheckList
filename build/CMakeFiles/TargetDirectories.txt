@@ -1,0 +1,8 @@
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/checklist.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/checklist_qmlimportscan.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/edit_cache.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/rebuild_cache.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/list_install_components.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/install.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/install/local.dir
+C:/Projects/Programing/CheckList/checklist/build/CMakeFiles/install/strip.dir

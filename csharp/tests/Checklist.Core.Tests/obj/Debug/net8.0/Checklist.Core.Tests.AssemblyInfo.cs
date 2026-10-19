@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Checklist.Core.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cdb5be8fe2c0c9a89bddc77d6e5cfa89b0d94b4f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4a0ec113c7e8f472c4623487b74b0d240ce56df")]
 [assembly: System.Reflection.AssemblyProductAttribute("Checklist.Core.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Checklist.Core.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

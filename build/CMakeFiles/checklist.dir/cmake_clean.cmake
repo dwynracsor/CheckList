@@ -1,0 +1,42 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/checklist.dir/qrc_qml.cpp.obj"
+  "CMakeFiles/checklist.dir/qrc_qml.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/controllers/TaskController.cpp.obj"
+  "CMakeFiles/checklist.dir/src/controllers/TaskController.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/controllers/TaskControllerQml.cpp.obj"
+  "CMakeFiles/checklist.dir/src/controllers/TaskControllerQml.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/controllers/TaskQml.cpp.obj"
+  "CMakeFiles/checklist.dir/src/controllers/TaskQml.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/domain/ChecklistItem.cpp.obj"
+  "CMakeFiles/checklist.dir/src/domain/ChecklistItem.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/domain/Correction.cpp.obj"
+  "CMakeFiles/checklist.dir/src/domain/Correction.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/domain/StatsCalculator.cpp.obj"
+  "CMakeFiles/checklist.dir/src/domain/StatsCalculator.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/domain/Task.cpp.obj"
+  "CMakeFiles/checklist.dir/src/domain/Task.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/domain/TaskTemplate.cpp.obj"
+  "CMakeFiles/checklist.dir/src/domain/TaskTemplate.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/ical/ICalExporter.cpp.obj"
+  "CMakeFiles/checklist.dir/src/ical/ICalExporter.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/ical/ICalImporter.cpp.obj"
+  "CMakeFiles/checklist.dir/src/ical/ICalImporter.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/main.cpp.obj"
+  "CMakeFiles/checklist.dir/src/main.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/persistence/JsonStorage.cpp.obj"
+  "CMakeFiles/checklist.dir/src/persistence/JsonStorage.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/sync/SyncManager.cpp.obj"
+  "CMakeFiles/checklist.dir/src/sync/SyncManager.cpp.obj.d"
+  "CMakeFiles/checklist.dir/src/undo/UndoCommand.cpp.obj"
+  "CMakeFiles/checklist.dir/src/undo/UndoCommand.cpp.obj.d"
+  "checklist.exe"
+  "checklist.exe.manifest"
+  "checklist.pdb"
+  "libchecklist.dll.a"
+  "qrc_qml.cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/checklist.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

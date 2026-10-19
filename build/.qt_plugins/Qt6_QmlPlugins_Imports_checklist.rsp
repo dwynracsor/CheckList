@@ -1,0 +1,9 @@
+-rootPath
+C:/Projects/Programing/CheckList/checklist
+-cmake-output
+-output-file
+C:/Projects/Programing/CheckList/checklist/build/.qt_plugins/Qt6_QmlPlugins_Imports_checklist.cmake
+-importPath
+C:/Projects/Programing/CheckList/checklist/build
+-importPath
+C:/Qt/6.6.3/mingw_64/./qml
